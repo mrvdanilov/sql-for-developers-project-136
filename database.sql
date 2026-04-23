@@ -135,8 +135,8 @@ create table program_completions (
 	user_id bigint references users (id) not null,
 	program_id bigint references programs (id) not null,
 	status varchar(10) not null check (status in ('active', 'completed', 'pending', 'cancelled')),
-	starting_date date not null default current_date,
-	finishing_date date not null default current_date,
+	started_at date not null default current_date,
+	completed_at date not null default current_date,
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now()
 );
