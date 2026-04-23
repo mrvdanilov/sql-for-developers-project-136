@@ -164,7 +164,7 @@ create table quizzes (
 );
 
 
-create extension if not exists ltree;
+/*create extension if not exists ltree;
 create table quizz_questions (
 	id bigint primary key generated always as identity,
 	quizz_id bigint references quizzes (id) on delete set null,
@@ -172,7 +172,7 @@ create table quizz_questions (
 	path ltree not null unique,	-- for example '1.1' or '1.2.3' 
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now()
-);
+);*/
 
 
 create table exercises (
@@ -196,14 +196,14 @@ create table discussions (
 );
 
 
-create table discussion_messages (
+/*create table discussion_messages (
 	id bigint primary key generated always as identity,
 	discussion_id bigint references discussions (id) on delete set null,
 	message text not null,
 	path ltree not null unique, 
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now()
-);
+);*/
 	
 
 create table blogs (
