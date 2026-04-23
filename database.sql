@@ -96,7 +96,7 @@ create table teaching_groups (
 
 create table users (
 	id bigint primary key generated always as identity,
-	teaching_group_id bigint references teaching_groups (id) on delete set null,
+	teaching_group_id bigint references teaching_groups (id), -- on delete set null,
 	name varchar(255) not null,
 	email varchar(255) not null unique,
 	password_hash text unique,--not null unique,	-- or bytea?..
