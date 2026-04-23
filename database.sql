@@ -5,13 +5,13 @@ drop table if exists exercises;
 drop table if exists quizz_questions;
 drop table if exists quizzes;
 drop table if exists certificates;
-drop table if exists program_completitions;
+drop table if exists program_completions;
 drop table if exists payments;
 drop table if exists enrollments;
 drop table if exists users;
 drop table if exists teaching_groups;
-drop table if exists modules_courses;
-drop table if exists programs_modules;
+drop table if exists course_modules;
+drop table if exists program_modules;
 drop table if exists lessons;
 drop table if exists courses;
 drop table if exists modules;
@@ -21,7 +21,7 @@ drop table if exists programs;
 -- #1. Creating the main instances of the platform
 create table programs (
 	id bigint primary key generated always as identity,
-	title varchar(255) unique not null,
+	name varchar(255) unique not null,
 	price numeric(10, 2) not null check (price >= 0),
 	program_type varchar(255) not null,
 	created_at timestamp not null default now(),
@@ -32,11 +32,11 @@ create table programs (
 create table modules (
 	id bigint primary key generated always as identity,
 	--program_id bigint references programs (id) not null,
-	title varchar(255) unique not null,
+	name varchar(255) unique not null,
 	description text not null,
-	created_aat timestamp not null default now(),
+	created_at timestamp not null default now(),
 	updated_at timestamp not null default now(),
-	is_deleted bool not null default false
+	deleted_at timestamp default null--bool not null default false   !!!
 	--unique (id, program_id)
 );
 
@@ -44,11 +44,11 @@ create table modules (
 create table courses (
 	id bigint primary key generated always as identity,
 	--module_id bigint references modules (id) not null,
-	title varchar(255) unique not null,
+	name varchar(255) unique not null,
 	description text not null,
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now(),
-	is_deleted bool not null default false
+	deleted_at timestamp default null -- bool not null default false
 	--unique (id, module_id)
 );
 
@@ -56,29 +56,29 @@ create table courses (
 create table lessons (
 	id bigint primary key generated always as identity,
 	course_id bigint references courses (id) not null,
-	title varchar(255) not null unique,
+	name varchar(255) not null unique,
 	content text not null,
 	video_url varchar(255) unique not null,
-	position_in_course int not null check (position_in_course > 0),
+	position int not null check (position > 0),
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now(),
-	is_deleted bool not null default false,
+	deleted_at timestamp default null, --bool not null default false,
 	unique (id, course_id)
 );
 
 
 -- the following two tables are required for implementing the multi-to-multi connection type
 -- between programs <-> modules and modules <-> courses
-create table programs_modules (
-	id bigint generated always as identity, 
+create table program_modules (
+	--id bigint generated always as identity, 
 	program_id bigint references programs (id) on delete cascade not null,
 	module_id bigint references modules (id) on delete cascade not null,
 	primary key (program_id, module_id)
 );
 
 
-create table modules_courses (
-	id bigint generated always as identity,
+create table course_modules (
+	--id bigint generated always as identity,
 	module_id bigint references modules (id) on delete cascade not null,
 	course_id bigint references courses (id) on delete cascade not null,
 	primary key (module_id, course_id)
@@ -100,9 +100,10 @@ create table users (
 	name varchar(255) not null,
 	email varchar(255) not null unique,
 	password_hash text not null unique,	-- or bytea?..
-	user_role varchar(10) not null default 'student' check (user_role in ('student', 'teacher', 'admin')),
+	role varchar(10) not null default 'student' check (role in ('student', 'teacher', 'admin')),
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now(),
+	deleted_at timestamp default null,
 	unique (id, teaching_group_id)
 );
 	
@@ -121,15 +122,15 @@ create table enrollments (
 create table payments (
 	id bigint primary key generated always as identity,
 	enrollment_id bigint references enrollments (id) not null,
-	payment_amount numeric(10, 2) not null check (payment_amount >= 0), 
-	payment_status varchar(10) check (payment_status in ('pending', 'paid', 'failed', 'refunded')),
-	payment_date date not null default current_date,
+	amount numeric(10, 2) not null check (amount >= 0), 
+	status varchar(10) check (status in ('pending', 'paid', 'failed', 'refunded')),
+	paid_at date not null default current_date,
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now()
 );
 
 
-create table program_completitions (
+create table program_completions (
 	id bigint primary key generated always as identity,
 	user_id bigint references users (id) not null,
 	program_id bigint references programs (id) not null,
@@ -146,7 +147,7 @@ create table certificates (
 	user_id bigint references users (id) not null,
 	program_id bigint references programs (id) not null,
 	url text not null,
-	release_date date not null default current_date,
+	issued_at date not null default current_date,
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now()
 );
@@ -156,7 +157,7 @@ create table certificates (
 create table quizzes (
 	id bigint primary key generated always as identity,
 	lesson_id bigint references lessons (id) on delete set null,
-	title varchar(255) not null,
+	name varchar(255) not null,
 	content text not null,
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now()
@@ -177,7 +178,7 @@ create table quizz_questions (
 create table exercises (
 	id bigint primary key generated always as identity,
 	lesson_id bigint references lessons (id) on delete set null,
-	title varchar(255) not null,
+	name varchar(255) not null,
 	url text not null,
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now()
@@ -188,7 +189,8 @@ create table exercises (
 create table discussions (
 	id bigint primary key generated always as identity,
 	lesson_id bigint references lessons (id) on delete set null,
-	content text not null,
+	user_id bigint references users (id) not null,
+	text text not null,
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now()
 );
@@ -207,7 +209,7 @@ create table discussion_messages (
 create table blogs (
 	id bigint primary key generated always as identity,
 	user_id bigint references users (id) not null,
-	title varchar(255) not null,
+	name varchar(255) not null,
 	content text not null,
 	status varchar(15) not null check (status in ('created', 'in moderation', 'published', 'archived')),
 	created_at timestamp not null default now(),
