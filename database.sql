@@ -100,7 +100,7 @@ create table users (
 	name varchar(255) not null,
 	email varchar(255) not null unique,
 	password_hash text unique,--not null unique,	-- or bytea?..
-	role varchar(10) not null default 'student' check (role in ('student', 'teacher', 'admin')),
+	role varchar(10) not null default 'student' check (role in ('Student', 'teacher', 'admin')),
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now(),
 	deleted_at timestamp default null--,
