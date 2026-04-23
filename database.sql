@@ -103,7 +103,7 @@ create table users (
 	role varchar(10) not null default 'student' check (role in ('student', 'teacher', 'admin')),
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now(),
-	deleted_at timestamp default null,
+	deleted_at timestamp default null--,
 	--unique (id, teaching_group_id)
 );
 	
