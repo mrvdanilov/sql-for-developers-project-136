@@ -104,7 +104,7 @@ create table users (
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now(),
 	deleted_at timestamp default null,
-	unique (id, teaching_group_id)
+	--unique (id, teaching_group_id)
 );
 	
 
