@@ -113,7 +113,7 @@ create table enrollments (
 	id bigint primary key generated always as identity,
 	user_id bigint references users (id) not null,
 	program_id bigint references programs (id) not null,
-	status varchar(10) not null check (status in ('active', 'pending', 'cancelled', 'completed')),
+	status varchar(15) not null check (status in ('active', 'pending', 'cancelled', 'completed')),
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now()
 );
