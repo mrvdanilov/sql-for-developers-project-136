@@ -56,7 +56,7 @@ create table courses (
 create table lessons (
 	id bigint primary key generated always as identity,
 	course_id bigint references courses (id),-- not null,
-	name varchar(255) not null unique,
+	name varchar(255) not null, -- unique,
 	content text not null,
 	video_url varchar(255) unique,-- not null,
 	position int check (position > 0),-- not null,
