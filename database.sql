@@ -44,7 +44,7 @@ create table modules (
 create table courses (
 	id bigint primary key generated always as identity,
 	--module_id bigint references modules (id) not null,
-	name varchar(255) unique not null,
+	name varchar(255) not null, --unique not null,
 	description text not null,
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now(),
