@@ -100,7 +100,7 @@ create table users (
 	name varchar(255) not null,
 	email varchar(255) not null unique,
 	password_hash text unique,--not null unique,	-- or bytea?..
-	role varchar(10) not null default 'student' check (role in ('Student', 'teacher', 'admin')),
+	role varchar(10) not null default 'Student' check (role in ('Student', 'Teacher', 'Admin')),
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now(),
 	deleted_at timestamp default null--,
@@ -156,7 +156,7 @@ create table certificates (
 -- #4. Additional content
 create table quizzes (
 	id bigint primary key generated always as identity,
-	lesson_id bigint references lessons (id) on delete set null,
+	lesson_id bigint references lessons (id),-- on delete set null,
 	name varchar(255) not null,
 	content text not null,
 	created_at timestamp not null default now(),
@@ -177,7 +177,7 @@ create table quizz_questions (
 
 create table exercises (
 	id bigint primary key generated always as identity,
-	lesson_id bigint references lessons (id) on delete set null,
+	lesson_id bigint references lessons (id),-- on delete set null,
 	name varchar(255) not null,
 	url text not null,
 	created_at timestamp not null default now(),
