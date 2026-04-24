@@ -113,7 +113,7 @@ create table enrollments (
 	id bigint primary key generated always as identity,
 	user_id bigint references users (id) not null,
 	program_id bigint references programs (id) not null,
-	status varchar(15) not null check (status in ('Active', 'Pending', 'Cancelled', 'Completed')),
+	status varchar(15) not null check (status in ('active', 'pending', 'cancelled', 'completed')),
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now()
 );
@@ -123,7 +123,7 @@ create table payments (
 	id bigint primary key generated always as identity,
 	enrollment_id bigint references enrollments (id) not null,
 	amount numeric(10, 2) not null check (amount >= 0), 
-	status varchar(10) check (status in ('Pending', 'Paid', 'Failed', 'Refunded')),
+	status varchar(10) check (status in ('pending', 'paid', 'failed', 'refunded')),
 	paid_at date not null default current_date,
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now()
@@ -134,7 +134,7 @@ create table program_completions (
 	id bigint primary key generated always as identity,
 	user_id bigint references users (id) not null,
 	program_id bigint references programs (id) not null,
-	status varchar(10) not null check (status in ('Active', 'Completed', 'Pending', 'Cancelled')),
+	status varchar(10) not null check (status in ('active', 'completed', 'pending', 'cancelled')),
 	started_at date not null default current_date,
 	completed_at date not null default current_date,
 	created_at timestamp not null default now(),
@@ -158,7 +158,7 @@ create table quizzes (
 	id bigint primary key generated always as identity,
 	lesson_id bigint references lessons (id),-- on delete set null,
 	name varchar(255) not null,
-	content text not null,
+	content jsonb not null,
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now()
 );
@@ -211,7 +211,7 @@ create table blogs (
 	user_id bigint references users (id) not null,
 	name varchar(255) not null,
 	content text not null,
-	status varchar(15) not null check (status in ('Created', 'In moderation', 'Published', 'Archived')),
+	status varchar(15) not null check (status in ('created', 'in moderation', 'published', 'archived')),
 	created_at timestamp not null default now(),
 	updated_at timestamp not null default now()
 );
